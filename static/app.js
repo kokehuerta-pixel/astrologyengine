@@ -87,9 +87,7 @@ async function saveProfile() {
   try {
     let user;
     if (currentUserId) {
-      user = await api('PATCH', `/users/${currentUserId}`, {
-        current_city: data.current_city
-      });
+      user = await api('PATCH', `/users/${currentUserId}`, data);
     } else {
       user = await api('POST', '/users/', data);
     }
@@ -116,6 +114,7 @@ async function calcNatal() {
     const planets = result.natal_chart.planets;
     renderPlanets('natal-planets', planets);
     renderPlanets('quick-planets', planets.slice(0, 6));
+    drawChart('natal-chart-viz', planets);
     document.getElementById('natal-card').style.display = 'block';
   } catch (e) {
     toast('Error calculando carta natal');
@@ -129,6 +128,7 @@ async function loadNatalChart() {
       const planets = JSON.parse(chart.chart_data_json);
       renderPlanets('natal-planets', planets);
       renderPlanets('quick-planets', planets.slice(0, 6));
+      drawChart('natal-chart-viz', planets);
       document.getElementById('natal-card').style.display = 'block';
     }
   } catch (e) {
@@ -299,6 +299,61 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function drawChart(containerId, planets) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const size = 300;
+  const center = size / 2;
+  const radius = size * 0.4;
+  
+  const signs = ['ARI', 'TAU', 'GEM', 'CAN', 'LEO', 'VIR', 'LIB', 'SCO', 'SAG', 'CAP', 'AQU', 'PIS'];
+  const colors = ['#f87171', '#fbbf24', '#34d399', '#60a5fa', '#f87171', '#fbbf24', '#34d399', '#60a5fa', '#f87171', '#fbbf24', '#34d399', '#60a5fa'];
+
+  let svg = `<svg viewBox="0 0 ${size} ${size}">
+    <!-- Círculo exterior -->
+    <circle cx="${center}" cy="${center}" r="${radius}" class="chart-circle" />
+    <circle cx="${center}" cy="${center}" r="${radius * 0.7}" class="chart-circle" />
+    
+    <!-- Divisiones de signos -->
+    ${signs.map((s, i) => {
+      const angle = i * 30 - 90;
+      const x1 = center + radius * Math.cos(angle * Math.PI / 180);
+      const y1 = center + radius * Math.sin(angle * Math.PI / 180);
+      const x2 = center + radius * 0.7 * Math.cos(angle * Math.PI / 180);
+      const y2 = center + radius * 0.7 * Math.sin(angle * Math.PI / 180);
+      
+      const textAngle = angle + 15;
+      const tx = center + radius * 0.85 * Math.cos(textAngle * Math.PI / 180);
+      const ty = center + radius * 0.85 * Math.sin(textAngle * Math.PI / 180);
+      
+      return `
+        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="chart-line" />
+        <text x="${tx}" y="${ty}" class="chart-text" text-anchor="middle" alignment-baseline="middle" transform="rotate(${textAngle + 90}, ${tx}, ${ty})">${s}</text>
+      `;
+    }).join('')}
+    
+    <!-- Planetas -->
+    ${planets.map(p => {
+      // Calcular ángulo basado en el signo y grado (simplificado)
+      const signIdx = signs.indexOf(p.sign.substring(0, 3).toUpperCase());
+      const angle = (signIdx * 30 + (p.longitude % 30)) - 90;
+      const px = center + radius * 0.55 * Math.cos(angle * Math.PI / 180);
+      const py = center + radius * 0.55 * Math.sin(angle * Math.PI / 180);
+      
+      // Iconos o letras para planetas
+      const icons = { 'Sol': '☉', 'Luna': '☽', 'Mercurio': '☿', 'Venus': '♀', 'Marte': '♂', 'Jupiter': '♃', 'Saturno': '♄', 'Urano': '♅', 'Neptuno': '♆', 'Pluton': '♇' };
+      const icon = icons[p.name] || p.name[0];
+      
+      return `
+        <text x="${px}" y="${py}" class="chart-planet" fill="${p.retrograde ? 'var(--gold)' : 'var(--accent-soft)'}" text-anchor="middle" alignment-baseline="middle">${icon}</text>
+      `;
+    }).join('')}
+  </svg>`;
+  
+  container.innerHTML = svg;
 }
 
 // Close modal on overlay click

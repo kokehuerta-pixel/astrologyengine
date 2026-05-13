@@ -35,5 +35,16 @@ Motor de cálculo astrológico de alto rendimiento con Stellium (Swiss Ephemeris
    python -m uvicorn src.astroengine.main:app --host 0.0.0.0 --port 8000
    ```
 
-## Parche de Stellium (Nota Técnica)
-Este repositorio incluye las instrucciones para corregir el error de casas en Windows/Stellium. El motor detecta automáticamente la plataforma y aplica los ajustes necesarios.
+## Flujo de Uso
+
+Para obtener una predicción exacta, el sistema sigue este orden:
+
+1. **Configuración de Perfil**: Ingresa tu nombre, fecha, hora y ciudad de nacimiento. También define tu ciudad actual.
+2. **Cálculo de Carta Natal**: Al guardar el perfil, la app calcula automáticamente tu carta natal (puntos base fijos). Sin este paso, no hay referencia para contrastar los tránsitos.
+3. **Generación de Lectura**: Presiona "Generar Lectura del Momento". El sistema contrastará tu carta natal guardada con los tránsitos planetarios actuales en tu ubicación y generará un reporte vía IA.
+
+## Nota Técnica (Stellium)
+Este motor utiliza `pysweph` bajo el capó. En Windows, se ha implementado un ajuste automático para el sistema de casas para evitar errores de librería C. El sistema de base de datos es SQLite, ligero y persistente.
+
+---
+*Desarrollado para la comunidad de astrología open source.*

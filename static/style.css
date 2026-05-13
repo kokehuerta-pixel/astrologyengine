@@ -353,6 +353,26 @@ body::before {
   line-height: 1;
 }
 
+/* === CHART VIZ === */
+.chart-container {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.chart-container svg { width: 90%; height: 90%; }
+.chart-circle { fill: none; stroke: var(--border); stroke-width: 1; }
+.chart-line { stroke: var(--border); stroke-width: 0.5; }
+.chart-text { fill: var(--text-muted); font-size: 8px; font-family: 'Inter', sans-serif; }
+.chart-planet { font-size: 10px; font-weight: bold; }
+
 /* === RESPONSIVE === */
 @media (min-width: 768px) {
   .app { max-width: 520px; }
