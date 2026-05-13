@@ -13,26 +13,27 @@ INSTRUCCIONES:
 - Ofrece interpretación práctica y accionable.
 - Tono: cálido, directo, sin esoterismo vacío.
 - Idioma: {language}.
-- IMPORTANTE: Debes seguir estrictamente la estructura solicitada según el nivel de profundidad ({depth}). No omitas ninguna sección.
+- IMPORTANTE: Debes seguir estrictamente la estructura solicitada según el nivel de profundidad ({depth}). NO omitas ninguna sección marcada como obligatoria.
 
 ESTRUCTURA OBLIGATORIA DEL REPORTE ({depth}):
-- BASIC: 
+
+- BASIC (Breve): 
   ### Resumen General
   ### Tránsitos Clave del Día
   ### Consejo del Día
 
-- COMPLETE: 
+- COMPLETE (Completo): 
   ### Resumen General
   ### Tránsitos Clave del Día
-  ### Análisis por Áreas (Amor, Trabajo, Salud, Finanzas)
+  ### Análisis por Áreas (Obligatorio: incluir Amor, Trabajo, Salud, Finanzas)
   ### La Luna del Día
   ### Consejo del Día
 
-- PROFESSIONAL: 
+- PROFESSIONAL (Profesional): 
   ### Resumen General
   ### Análisis de Dignidades y Regencias
   ### Patrones de Aspectos y Configuración
-  ### Análisis Detallado por Áreas
+  ### Análisis Detallado por Áreas (Obligatorio: Amor, Trabajo, Salud, Finanzas, Evolución Personal)
   ### Profecciones y Timing
   ### Guía de Acción Estelar
 """

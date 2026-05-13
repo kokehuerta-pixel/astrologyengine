@@ -67,7 +67,8 @@ async def quick_reading(
     birth_city: str,
     current_city: str,
     lang: str = "es",
-    depth: str = "complete"
+    depth: str = "complete",
+    model: str | None = None
 ):
     """
     Endpoint de paso único diseñado para agentes (Hermes/Bots).
@@ -84,7 +85,8 @@ async def quick_reading(
             natal["prompt_text"],
             transit["prompt_text"],
             depth=depth,
-            language=lang
+            language=lang,
+            model=model
         )
 
         return {
@@ -92,7 +94,8 @@ async def quick_reading(
             "metadata": {
                 "name": name,
                 "location": current_city,
-                "transit_time": transit["transit_datetime"]
+                "transit_time": transit["transit_datetime"],
+                "model_used": model or "default"
             }
         }
     except Exception as e:

@@ -55,8 +55,9 @@ Para facilitar la integración con agentes externos o bots de Telegram, se ha ha
 - `birth_time`: Hora (HH:MM).
 - `birth_city`: Ciudad de nacimiento.
 - `current_city`: Ciudad actual para tránsitos.
-- `lang`: Idioma (es, en, pt).
-- `depth`: Profundidad (basic, complete, professional).
+- `lang`: Idioma (`es`, `en`, `pt`).
+- `depth`: Profundidad (`basic` - breve, `complete` - completo, `professional` - profesional).
+- `model`: Modelo de IA (`gemini-3.1-flash-lite`, `gemini-3-flash-preview`, `gemini-2.5-flash`, `gemma-4-31b-it`).
 
 Este endpoint retorna directamente el JSON con la interpretación en Markdown, ideal para ser enviado por un bot.
 

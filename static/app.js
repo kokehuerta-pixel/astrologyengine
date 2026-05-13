@@ -74,7 +74,7 @@ async function saveProfile() {
     current_city: document.getElementById('inp-current-city').value,
     language: document.getElementById('sel-language')?.value || 'es',
     report_depth: document.getElementById('sel-depth')?.value || 'complete',
-    llm_model: document.getElementById('sel-model')?.value || 'gemini-2.5-flash',
+    llm_model: document.getElementById('sel-model')?.value || 'gemini-3.1-flash-lite',
   };
 
   if (!data.name || !data.birth_date || !data.birth_time || !data.birth_city || !data.current_city) {
@@ -181,7 +181,7 @@ async function loadSettings() {
     const user = await api('GET', `/users/${currentUserId}`);
     document.getElementById('sel-language').value = user.language || 'es';
     document.getElementById('sel-depth').value = user.report_depth || 'complete';
-    document.getElementById('sel-model').value = user.llm_model || 'gemini-2.5-flash';
+    document.getElementById('sel-model').value = user.llm_model || 'gemini-3.1-flash-lite';
   } catch (e) {}
 }
 
