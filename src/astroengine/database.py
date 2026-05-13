@@ -24,7 +24,7 @@ async def init_db():
             current_city TEXT NOT NULL,
             language TEXT DEFAULT 'es',
             report_depth TEXT DEFAULT 'complete',
-            llm_model TEXT DEFAULT 'gemini-2.5-flash',
+            llm_model TEXT DEFAULT 'gemini-3.1-flash-lite',
             created_at TEXT DEFAULT (datetime('now'))
         );
 

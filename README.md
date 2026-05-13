@@ -25,7 +25,7 @@ Motor de cálculo astrológico de alto rendimiento con Stellium (Swiss Ephemeris
    ```
 
 3. **Variables de Entorno**:
-   Crea un archivo `.env` con tu API Key:
+   Crea un archivo `.env` en la raíz del proyecto. Necesitarás una clave de Google AI Studio ([consíguela aquí](https://aistudio.google.com/)):
    ```env
    GEMINI_API_KEY=tu_clave_aqui
    ```
