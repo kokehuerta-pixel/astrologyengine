@@ -59,6 +59,46 @@ async def generate_reading(req: TransitRequest):
         await db.close()
 
 
+@router.get("/direct")
+async def quick_reading(
+    name: str,
+    birth_date: str,
+    birth_time: str,
+    birth_city: str,
+    current_city: str,
+    lang: str = "es",
+    depth: str = "complete"
+):
+    """
+    Endpoint de paso único diseñado para agentes (Hermes/Bots).
+    Calcula natal, tránsito e interpretación sin necesidad de gestión previa de usuarios.
+    """
+    natal_dt = f"{birth_date} {birth_time}"
+    try:
+        # Calcular natal y tránsitos directamente
+        natal = calculate_natal_chart(natal_dt, birth_city, name=name)
+        transit = calculate_transit(natal_dt, birth_city, current_city)
+
+        # Generar interpretación
+        interpretation = await generate_interpretation(
+            natal["prompt_text"],
+            transit["prompt_text"],
+            depth=depth,
+            language=lang
+        )
+
+        return {
+            "interpretation": interpretation,
+            "metadata": {
+                "name": name,
+                "location": current_city,
+                "transit_time": transit["transit_datetime"]
+            }
+        }
+    except Exception as e:
+        raise HTTPException(500, f"Error en cálculo directo: {str(e)}")
+
+
 @router.get("/history/{user_id}")
 async def get_history(user_id: int, limit: int = 10):
     """Obtener historial de lecturas de un usuario."""
