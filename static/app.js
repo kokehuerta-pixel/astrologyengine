@@ -264,18 +264,24 @@ async function api(method, path, body) {
 
 function markdownToHtml(md) {
   if (!md) return '';
-  return md
+  let html = md
     .replace(/### (.+)/g, '<h3>$1</h3>')
     .replace(/## (.+)/g, '<h2>$1</h2>')
     .replace(/# (.+)/g, '<h1>$1</h1>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/---/g, '<hr>')
+    .replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>')
     .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, '<ol>$&</ol>')
-    .replace(/^\- (.+)$/gm, '<li>$1</li>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
+    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+  // Wrap blocks that are not headers or lists in paragraphs
+  return html.split('\n\n').map(block => {
+    if (block.startsWith('<h') || block.startsWith('<ul') || block.startsWith('<ol') || block.startsWith('<hr')) {
+      return block;
+    }
+    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+  }).join('');
 }
 
 function formatDate(dt) {
