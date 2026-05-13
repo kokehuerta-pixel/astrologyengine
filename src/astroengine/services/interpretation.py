@@ -1,0 +1,65 @@
+"""Servicio de interpretación astrológica usando Gemini API."""
+
+from google import genai
+from ..config import settings
+
+
+SYSTEM_PROMPT = """Eres un astrólogo profesional con profundo conocimiento de astrología occidental moderna y tradicional.
+
+INSTRUCCIONES:
+- Analiza los datos astrológicos proporcionados con precisión técnica
+- Cita posiciones exactas (grados, signos, casas)
+- Identifica los tránsitos más relevantes del momento
+- Ofrece interpretación práctica y accionable
+- Tono: cálido, directo, sin esoterismo vacío
+- Idioma: {language}
+
+ESTRUCTURA DEL REPORTE ({depth}):
+- BASIC: Resumen (3-4 párrafos), tránsitos clave, consejo del día (~500 palabras)
+- COMPLETE: Todo lo anterior + análisis por áreas (amor, trabajo, salud, finanzas) + Luna del día (~1000 palabras)
+- PROFESSIONAL: Todo lo anterior + dignidades, patrones de aspectos, profecciones, timing exacto (~2000 palabras)
+"""
+
+
+async def generate_interpretation(
+    natal_prompt_text: str,
+    transit_prompt_text: str,
+    depth: str = "complete",
+    language: str = "es",
+    model: str | None = None,
+) -> str:
+    """
+    Genera interpretación astrológica personalizada usando Gemini.
+
+    Args:
+        natal_prompt_text: Texto de la carta natal (de Stellium)
+        transit_prompt_text: Texto de los tránsitos (de Stellium)
+        depth: Nivel de profundidad (basic, complete, professional)
+        language: Idioma de la interpretación
+        model: Modelo LLM a usar (None = usa el configurado)
+
+    Returns:
+        Texto de la interpretación generada
+    """
+    client = genai.Client(api_key=settings.gemini_api_key)
+    model_name = model or settings.llm_model
+
+    system = SYSTEM_PROMPT.format(language=language, depth=depth.upper())
+
+    user_msg = f"""## CARTA NATAL DEL USUARIO
+{natal_prompt_text}
+
+## TRÁNSITOS ACTUALES
+{transit_prompt_text}
+
+Genera la interpretación astrológica personalizada en nivel {depth.upper()}."""
+
+    response = await client.aio.models.generate_content(
+        model=model_name,
+        contents=user_msg,
+        config=genai.types.GenerateContentConfig(
+            system_instruction=system,
+            temperature=0.7,
+        ),
+    )
+    return response.text

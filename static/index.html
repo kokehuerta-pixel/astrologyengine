@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="description" content="Motor de prediccion astrologica personalizada">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>AstroEngine</title>
+  <link rel="manifest" href="/static/manifest.json">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>AstroEngine</h1>
+      <div class="subtitle">Motor Astrologico Personal</div>
+    </header>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-view="reading" id="nav-reading">Lectura</button>
+      <button class="nav-btn" data-view="profile" id="nav-profile">Perfil</button>
+      <button class="nav-btn" data-view="settings" id="nav-settings">Ajustes</button>
+      <button class="nav-btn" data-view="history" id="nav-history">Historial</button>
+    </nav>
+
+    <!-- VIEW: READING -->
+    <section class="view active" id="view-reading">
+      <div id="no-user-msg" class="empty">
+        <div class="empty-icon">&#9734;</div>
+        <p>Configura tu perfil primero para generar tu lectura astrologica personalizada.</p>
+        <br>
+        <button class="btn btn-primary" onclick="switchView('profile')">Configurar Perfil</button>
+      </div>
+      <div id="reading-actions" style="display:none;">
+        <div class="card">
+          <div class="card-label">Usuario activo</div>
+          <div class="card-title" id="active-user-name">--</div>
+          <div class="planet-grid" id="quick-planets"></div>
+        </div>
+        <button class="btn btn-gold" id="btn-generate" onclick="generateReading()">
+          Generar Lectura del Momento
+        </button>
+        <div id="reading-loading" class="loading" style="display:none;">
+          <div class="spinner"></div>
+          <span>Calculando posiciones planetarias y generando interpretacion...</span>
+        </div>
+        <div id="reading-result" style="display:none; margin-top:16px;">
+          <div class="card">
+            <div class="card-label">Lectura Astrologica</div>
+            <div class="card-title" id="reading-datetime">--</div>
+            <div style="margin-bottom:8px;">
+              <span class="status-badge ok" id="reading-location">--</span>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+            <div class="reading-content" id="reading-text"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: PROFILE -->
+    <section class="view" id="view-profile">
+      <div class="card">
+        <div class="card-title">Datos de Nacimiento</div>
+        <div class="card-label">Estos datos son necesarios para calcular tu carta natal</div>
+        <br>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="inp-name" placeholder="Tu nombre">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha de nacimiento</label>
+            <input type="date" id="inp-birth-date">
+          </div>
+          <div class="form-group">
+            <label>Hora de nacimiento</label>
+            <input type="time" id="inp-birth-time">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Ciudad de nacimiento</label>
+          <input type="text" id="inp-birth-city" placeholder="Ej: Rancagua, Chile">
+        </div>
+        <div class="form-group">
+          <label>Ciudad actual</label>
+          <input type="text" id="inp-current-city" placeholder="Ej: Rancagua, Chile">
+        </div>
+        <button class="btn btn-primary" id="btn-save-profile" onclick="saveProfile()">Guardar Perfil</button>
+        <div id="profile-status" style="margin-top:12px;text-align:center;font-size:0.85rem;color:var(--text-muted);"></div>
+      </div>
+
+      <div id="natal-card" class="card" style="display:none;">
+        <div class="card-title">Tu Carta Natal</div>
+        <div class="card-label">Posiciones planetarias al momento de tu nacimiento</div>
+        <br>
+        <div class="planet-grid" id="natal-planets"></div>
+        <button class="btn btn-secondary" style="margin-top:16px;" onclick="calcNatal()">Recalcular Carta Natal</button>
+      </div>
+    </section>
+
+    <!-- VIEW: SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="card">
+        <div class="card-title">Preferencias</div>
+        <div class="form-group">
+          <label>Idioma del reporte</label>
+          <select id="sel-language">
+            <option value="es">Espanol</option>
+            <option value="en">English</option>
+            <option value="pt">Portugues</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Profundidad del reporte</label>
+          <select id="sel-depth">
+            <option value="basic">Basico (~500 palabras)</option>
+            <option value="complete">Completo (~1000 palabras)</option>
+            <option value="professional">Profesional (~2000 palabras)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Modelo de IA</label>
+          <select id="sel-model">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (rapido)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (detallado)</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">Guardar Ajustes</button>
+        <div id="settings-status" style="margin-top:12px;text-align:center;font-size:0.85rem;color:var(--text-muted);"></div>
+      </div>
+    </section>
+
+    <!-- VIEW: HISTORY -->
+    <section class="view" id="view-history">
+      <div class="card">
+        <div class="card-title">Historial de Lecturas</div>
+        <div class="card-label">Tus lecturas astrologicas anteriores</div>
+      </div>
+      <div id="history-list"></div>
+      <div id="history-empty" class="empty" style="display:none;">
+        <div class="empty-icon">&#128302;</div>
+        <p>Aun no tienes lecturas. Genera tu primera lectura desde la pantalla principal.</p>
+      </div>
+    </section>
+
+    <!-- MODAL for reading detail -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="card-title" id="modal-title">--</div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+        <div class="reading-content" id="modal-content"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
