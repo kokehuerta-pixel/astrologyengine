@@ -57,3 +57,13 @@ class TransitRequest(BaseModel):
     user_id: int
     location: Optional[str] = None       # Override current_city
     datetime_override: Optional[str] = None  # Override "now"
+
+
+class SynastryRequest(BaseModel):
+    user_id_1: int
+    user_id_2: Optional[int] = None      # Si se compara con otro usuario registrado
+    guest_name: Optional[str] = None     # Si se compara con un invitado
+    guest_birth_date: Optional[str] = None
+    guest_birth_time: Optional[str] = None
+    guest_birth_city: Optional[str] = None
+    location_override: Optional[str] = None

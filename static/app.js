@@ -174,6 +174,53 @@ async function generateReading() {
   btn.disabled = false;
 }
 
+// === SYNASTRY ===
+async function generateSynastry() {
+  if (!currentUserId) {
+    toast('Configura tu perfil primero');
+    return;
+  }
+
+  const name = document.getElementById('syn-name').value;
+  const date = document.getElementById('syn-birth-date').value;
+  const time = document.getElementById('syn-birth-time').value;
+  const city = document.getElementById('syn-city').value;
+
+  if (!name || !date || !city) {
+    toast('Completa los datos de la otra persona');
+    return;
+  }
+
+  const btn = document.querySelector('#view-synastry .btn-gold');
+  const loading = document.getElementById('syn-loading');
+  const result = document.getElementById('syn-result');
+
+  btn.disabled = true;
+  loading.style.display = 'flex';
+  result.style.display = 'none';
+
+  try {
+    const data = await api('POST', '/synastry/calculate', {
+      user_id_1: currentUserId,
+      guest_name: name,
+      guest_birth_date: date,
+      guest_birth_time: time,
+      guest_birth_city: city
+    });
+
+    document.getElementById('syn-partner-name').textContent = `Con ${data.p2_name}`;
+    document.getElementById('syn-text').innerHTML = markdownToHtml(data.resolution);
+
+    result.style.display = 'block';
+    toast('Resolución generada');
+  } catch (e) {
+    toast('Error: ' + e.message);
+  }
+
+  loading.style.display = 'none';
+  btn.disabled = false;
+}
+
 // === SETTINGS ===
 async function loadSettings() {
   if (!currentUserId) return;
