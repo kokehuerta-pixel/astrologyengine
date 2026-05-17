@@ -61,6 +61,17 @@ Para facilitar la integración con agentes externos o bots de Telegram, se ha ha
 
 Este endpoint retorna directamente el JSON con la interpretación en Markdown, ideal para ser enviado por un bot.
 
+## Integración Nativa con Hermes-Agent
+
+Para integrar `AstroEngine` como una **Skill Nativa** dentro de [hermes-agent](https://github.com/NousResearch/hermes-agent) usando *function calling* puro:
+
+1. El archivo `src/astroengine/agent_tools.py` expone las funciones astrológicas con **firmas planas** (flat parameters) y **geocodificación interna** (no requiere que el LLM alucine latitudes o longitudes).
+2. Simplemente importa e inyecta estas funciones en tu registro de herramientas de Hermes:
+   - `tool_get_natal_reading`
+   - `tool_get_transit_reading`
+   - `tool_get_relational_flow_reading`
+3. Asegúrate de instalar las dependencias del proyecto (`geopy`, `stellium`, `google-genai`) en el entorno donde corre tu agente.
+
 ## Nota Técnica (Stellium)
 Este motor utiliza `pysweph` bajo el capó. En Windows, se ha implementado un ajuste automático para el sistema de casas para evitar errores de librería C. El sistema de base de datos es SQLite, ligero y persistente.
 

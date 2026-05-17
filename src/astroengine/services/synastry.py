@@ -22,10 +22,10 @@ def calculate_synastry(
         dict con prompt_text y aspectos cruzados
     """
     synastry = MultiChartBuilder.synastry(
-        person1_data=natal_data_1,
-        person2_data=natal_data_2,
-        name1=name_1,
-        name2=name_2,
+        data1=natal_data_1,
+        data2=natal_data_2,
+        label1=name_1 or "Persona 1",
+        label2=name_2 or "Persona 2",
     ).calculate()
 
     # Extraer aspectos cruzados (Persona 1 vs Persona 2)
